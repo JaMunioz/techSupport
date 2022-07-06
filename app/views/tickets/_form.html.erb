@@ -1,0 +1,127 @@
+<% if notice != "Your statistic was generated successfully" and notice != "Report generated successfully" %>
+  <div id='hideMe'>
+    <p id="notice" class="btn-cancel" style="text-align: center"><%= notice %></p>
+  </div>
+<%end %>
+<h2 style= "color: white;" >Editing Ticket "<%=@ticket.title%>" </h2>
+<% cond = 1 %>
+<%if @current_user.role == "user" && cond == 1%>
+  <div class="row ml-0">
+    <div class="col-6">
+      <%= form_with model: ticket, local: true do |form| %>
+
+        <div class="mb-3">
+          <%= form.label :date_incident, class: "form-label", style: "color: white;"   %>
+          <%= form.datetime_local_field :date_incident, class: "form-control" %>
+        </div>
+        <div class="mb-3">
+          <%= form.label :title, class: "form-label", style: "color: white;"   %>
+          <%= form.text_field :title, class: "form-control" %>
+        </div>
+        <div class="mb-3">
+          <%= form.label :description, class: "form-label", style: "color: white;"   %>
+          <%= form.text_area :description, class: "form-control" %>
+        </div>
+        <div class="mb-3">
+          <%= form.label :flyer, class: "form-label", style: "color: white;"   %>
+          <%= form.file_field :flyer, style: "color: white;"   %>
+        </div>
+        <div class="mt-2">
+          <%= form.submit submit_btn_text, class: ["btn", "btn-confirm"] %>
+          <%= link_to "Back", ticket_path, class: ["btn", "btn-cancel"] %>
+        </div>
+    </div>
+  </div>
+<% end %>
+
+<%else if @current_user.role != "user"%>
+    <%if @tickets_priority.first.nil? %>
+      <div class="row ml-0">
+        <div class="col-6">
+          <%= form_with model: ticket, local: true do |form| %>
+            <%if @ticket.priority == nil%>
+              <div class="mb-3">
+                <%= form.label :priority, class: "form-label", style: "color: white;"   %>
+                <%= form.collection_select(:priority, @priority, :to_s, :to_s, { class: "form-control" }) %>
+              </div>
+            <%end %>
+            <div class="mb-3">
+              <%= form.text_field :status, style: "display: none", value: "Pending" %>
+            </div>
+            <div class="mb-3">
+              <%= form.label :executive, class: "form-label", style: "color: white;"   %>
+              <%= form.collection_select(:user_id, User.where(role: "executive").order(email: :asc), :id, :email, {}, { class: "form-control" }) %>
+            </div>
+            <div class="mt-2">
+              <%= form.submit submit_btn_text, class: ["btn", "btn-confirm"] %>
+              <% if $backer == "direct" %>
+                <%= link_to "Back", users_path, class: ["btn", "btn-cancel"] %>
+              <%else %>
+                <%= link_to "Back", ticket_path, class: ["btn", "btn-cancel"] %>
+              <%end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <%else %>
+      <% a = 1 %>
+      <% @tickets_priority.each do |t| %>
+        <%if a == 1 %>
+          <%if @ticket.id == t.id%>
+            <% a = 0 %>
+            <div class="row ml-0">
+              <div class="col-6">
+                <%= form_with model: ticket, local: true do |form| %>
+                  <%if @ticket.priority == nil%>
+                    <div class="mb-3">
+                      <%= form.label :priority, class: "form-label", style: "color: white;"   %>
+                      <%= form.collection_select(:priority, @priority, :to_s, :to_s, { class: "form-control" }) %>
+                    </div>
+                  <%end %>
+                  <div class="mt-2">
+                    <%= form.submit submit_btn_text, class: ["btn", "btn-confirm"] %>
+                    <% if $backer == "direct" %>
+                      <%= link_to "Back", users_path, class: ["btn", "btn-cancel"] %>
+                    <%else %>
+                      <%= link_to "Back", ticket_path, class: ["btn", "btn-cancel"] %>
+                    <%end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <%else %>
+            <% a = 0 %>
+            <div class="row ml-0">
+              <div class="col-6">
+                <%= form_with model: ticket, local: true do |form| %>
+                  <%if @ticket.priority == nil%>
+                    <div class="mb-3">
+                      <%= form.label :priority, class: "form-label", style: "color: white;"   %>
+                      <%= form.collection_select(:priority, @priority, :to_s, :to_s, { class: "form-control" }) %>
+                    </div>
+                  <%end %>
+                  <div class="mb-3">
+                    <%= form.text_field :status, style: "display: none", value: "Pending" %>
+                  </div>
+                  <div class="mb-3">
+                    <%= form.label :executive, class: "form-label", style: "color: white;"   %>
+                    <%= form.collection_select(:user_id, User.where(role: "executive").order(email: :asc), :id, :email, {}, { class: "form-control" }) %>
+                  </div>
+                  <div class="mt-2">
+                    <%= form.submit submit_btn_text, class: ["btn", "btn-confirm"] %>
+                    <% if $backer == "direct" %>
+                      <%= link_to "Back", users_path, class: ["btn", "btn-cancel"] %>
+                    <%else %>
+                      <%= link_to "Back", ticket_path, class: ["btn", "btn-cancel"] %>
+                    <%end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <%end %>
+        <% end %>
+      <%end %>
+      <%end %>
+  <%end %>
+<%end %>
+

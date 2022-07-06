@@ -1,0 +1,688 @@
+<% if notice != "Your statistic was generated successfully" and notice != "Report generated successfully" %>
+  <div id='hideMe'>
+    <div id="notice" class="btn-confirm" style="text-align: center"><%= notice %></div>
+  </div>
+  <br>
+<% end %>
+<p style="text-align:left; color: white;">
+  <%= image_tag("engranaje.png", width: "100", height: "100", background: "#FFFFFF") %>
+  <span>
+    <font size="+10">Technic Support</font>
+  </span>
+<p style="float:right;">
+  <%= link_to "Log out", destroy_user_session_path, class: "btn btn-default", style: "float:right;" %>
+</p>
+</p> <br><br><br>
+<p style="text-align:left; color: white;">
+  <font size="+3">Welcome, <%= @current_user.first_name %> <%= @current_user.last_name %></font>
+  <span style="float:right;">
+    <% if @current_user.role == "admin" || @current_user.role == "supervisor" %>
+        <%= link_to image_tag("stadistics.png", width: "40", height: "40", background: "#FFFFFF"), "/statistic" %>
+      &nbsp <%= link_to image_tag("file.png", width: "40", height: "40", background: "#FFFFFF"), executive_reports_path %><% end %> <%= link_to image_tag("profile.svg", width: "40", height: "40", background: "#FFFFFF"), user_path(current_user.id), style: "top:200px" %>
+  </span>
+</p>
+<% if @users_roles == "user" %>
+  <p style="text-align:-moz-right; color: white;">
+    Do you have a problem?, don´t worry, just send a ticket.&nbsp;&nbsp;&nbsp;&nbsp;
+    <span style="float:right;">
+        <%= link_to image_tag("add.svg", width: "40", height: "40", background: "#FFFFFF"), "/tickets/new/#{@current_user.id}", style: "top:200px" %>
+    </span>
+  </p> <br>
+  <% if @tickets_open.size != 0 %>
+    <p style="text-align:left; color: white;">
+      <font size="+2">Open Tickets:</font>
+      <span style="float:right;" class=" btn-default transparent">
+         --------------------------------------------------------------------------------------------------------------------------------------------------
+      </span>
+    </p>
+
+    <p style="text-align:left; color: white;">
+      <label for="myInputOpen"></label>
+      <input type="text" id="myInputOpen" onkeyup="myFunctionOpen()" placeholder="Search by.." class="btn-default">
+    </p>
+
+    <table class="table" style="width:100%" id="myTableOpen">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col" style="width:5%">ID</th>
+        <th scope="col" style="width:30%">Title</th>
+        <th scope="col" style="width:45%">Description</th>
+        <th scope="col" style="width:10%">Status</th>
+        <th style="width:10%"></th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @tickets_open.each do |ticket| %>
+        <tr class="MyTableRow">
+          <td><%= ticket.id %></td>
+          <td><%= ticket.title %></td>
+          <td><%= ticket.description %></td>
+          <td><%= ticket.status %></td>
+          <td><%= button_to "Details", { controller: "tickets", action: "set", ticket_id: ticket.id, user_id: @current_user.id }, method: :post, class: "btn btn-default" %> </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table> <br>
+    <script>
+        function myFunctionOpen() {
+            // Declare variables
+            let input, filter, rows, i, titleTd, descriptionTd, idTd, statusTd, titleValue, descriptionValue, idValue,
+                statusValue;
+            input = document.getElementById("myInputOpen");
+            filter = input.value.toUpperCase();
+            rows = document.getElementsByClassName("MyTableRow");
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < rows.length; i++) {
+                titleTd = rows[i].getElementsByTagName("td")[1];
+                descriptionTd = rows[i].getElementsByTagName("td")[2];
+                idTd = rows[i].getElementsByTagName("td")[0];
+                statusTd = rows[i].getElementsByTagName("td")[3];
+                if (titleTd) {
+                    titleValue = titleTd.textContent || titleTd.innerText;
+                }
+                if (descriptionTd) {
+                    descriptionValue = descriptionTd.textContent || descriptionTd.innerText;
+                }
+                if (idTd) {
+                    idValue = idTd.textContent || idTd.innerText;
+                }
+                if (statusTd) {
+                    statusValue = statusTd.textContent || statusTd.innerText;
+                }
+                if (titleValue.toUpperCase().indexOf(filter) > -1 || descriptionValue.toUpperCase().indexOf(filter) > -1 || idValue.toUpperCase().indexOf(filter) > -1 || statusValue.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    </script><br>
+  <% end %>
+
+  <% if @tickets_closed.size != 0 %>
+    <p style="text-align:left; color: white;">
+      <font size="+2">Closed Tickets:</font>
+      <span style="float:right;" class=" btn-default transparent">
+         --------------------------------------------------------------------------------------------------------------------------------------------------
+      </span>
+    </p>
+
+    <p style="text-align:left; color: white;">
+      <label for="myInputClosed"></label>
+      <input type="text" id="myInputClosed" onkeyup="myFunctionClosed()" placeholder="Search by.." class="btn-default">
+    </p>
+
+    <table class="table" style="width:100%" id="myTableClosed">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col" style="width:5%">ID</th>
+        <th scope="col" style="width:20%">Title</th>
+        <th scope="col" style="width:30%">Description</th>
+        <th scope="col" style="width:10%">Status</th>
+        <th scope="col" style="width:25%">Date Resolution</th>
+        <th style="width:10%"></th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @tickets_closed.each do |ticket| %>
+        <tr class="MyTableRow2">
+          <td><%= ticket.id %></td>
+          <td><%= ticket.title %></td>
+          <td><%= ticket.description %></td>
+          <td><%= ticket.status %></td>
+          <td><%= ticket.date_ticket_resolution %></td>
+          <td><%= button_to "Details", { controller: "tickets", action: "set", ticket_id: ticket.id, user_id: @current_user.id }, method: :post, class: "btn btn-default" %> </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <script>
+        function myFunctionClosed() {
+            // Declare variables
+            let input, filter, rows, i, titleTd, descriptionTd, idTd, titleValue, descriptionValue, idValue;
+            input = document.getElementById("myInputClosed");
+            filter = input.value.toUpperCase();
+            rows = document.getElementsByClassName("MyTableRow2");
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < rows.length; i++) {
+                titleTd = rows[i].getElementsByTagName("td")[1];
+                descriptionTd = rows[i].getElementsByTagName("td")[2];
+                idTd = rows[i].getElementsByTagName("td")[0];
+                if (titleTd) {
+                    titleValue = titleTd.textContent || titleTd.innerText;
+                }
+                if (descriptionTd) {
+                    descriptionValue = descriptionTd.textContent || descriptionTd.innerText;
+                }
+                if (idTd) {
+                    idValue = idTd.textContent || idTd.innerText;
+                }
+                if (titleValue.toUpperCase().indexOf(filter) > -1 || descriptionValue.toUpperCase().indexOf(filter) > -1 || idValue.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    </script><br>
+  <% end %>
+
+
+<% else %>
+  <% if @users_roles == "executive" %>
+
+    <p style="text-align:-moz-right; color: white;">
+      Create Ticket for a User.&nbsp;&nbsp;&nbsp;&nbsp;
+      <span style="float:right;">
+        <%= link_to image_tag("add.svg", width: "40", height: "40", background: "#FFFFFF"), "/tickets/new/#{@current_user.id}", style: "top:200px" %>
+    </span>
+    </p> <br>
+
+    <% if @tickets_open.size != 0 %>
+      <p style="text-align:left; color: white;">
+        <font size="+2">Tickets to review:</font>
+        <span style="float:right;" class=" btn-default transparent">
+       -----------------------------------------------------------------------------------------------------------------------------------------
+    </span>
+      </p>
+
+      <p style="text-align:left; color: white;">
+        <label for="myInputToReview"></label>
+        <input type="text" id="myInputToReview" onkeyup="myFunctionToReview()" placeholder="Search by.." class="btn-default">
+        <span style="float:right;" class=" btn-default">
+          Order by:
+        <select id="selectBoxExecutive" class="btn-default" onchange="sortTable('myTableToReview','selectBoxExecutive', 6, 7);">
+          <option value="id">Id</option>
+          <option value="priority">Priority</option>
+          <option value="else">Closing date</option>
+        </select>
+      </span>
+      </p>
+
+      <table class="table" style="width:100%" id="myTableToReview">
+        <thead class="btn-default">
+        <tr>
+          <th style="width:5%"></th>
+          <th scope="col" style="width:5%">ID</th>
+          <th scope="col" style="width:15%">Title</th>
+          <th scope="col" style="width:40%">Description</th>
+          <th scope="col" style="width:20%">User Email</th>
+          <th scope="col" style="width:10%">Status</th>
+          <th scope="col">Priority</th>
+          <th scope="col">Closing Date</th>
+          <th scope="col" style="width:10%"></th>
+        </tr>
+        </thead>
+        <tbody class="btn-default">
+        <% @tickets_open.each do |ticket| %>
+          <tr class="MyTableRow3">
+            <% if ticket.tags == "red" %>
+              <td><%= image_tag("red.svg", width: "35", height: "35", background: "#FFFFFF") %></td>
+            <% else
+                 if ticket.tags == "yellow" %>
+                <td><%= image_tag("yellow.svg", width: "35", height: "35", background: "#FFFFFF") %></td>
+              <% else %>
+                <td><%= image_tag("green.svg", width: "35", height: "35", background: "#FFFFFF") %></td>
+              <% end %>
+            <% end %>
+            <td><%= ticket.id %></td>
+            <td><%= ticket.title %></td>
+            <td><%= ticket.description %></td>
+            <td><%= User.joins(requests: :ticket).where(tickets: { id: ticket.id }).distinct.pluck(:email)[0] %></td>
+            <td><%= ticket.status %></td>
+            <% if ticket.priority == nil %>
+              <td>Not define</td>
+            <% else %>
+              <td><%= ticket.priority %></td>
+            <% end %>
+            <td><%= ticket.ticket_deadline %></td>
+            <td><%= button_to "Details", { controller: "tickets", action: "set", ticket_id: ticket.id, user_id: @current_user.id }, method: :post, class: "btn btn-default" %> </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <script>
+          function myFunctionToReview() {
+              // Declare variables
+              let input, filter, rows, i, titleTd, descriptionTd, idTd, emailTd, statusTd, titleValue, descriptionValue,
+                  idValue, emailValue, statusValue;
+              input = document.getElementById("myInputToReview");
+              filter = input.value.toUpperCase();
+              rows = document.getElementsByClassName("MyTableRow3");
+              // Loop through all table rows, and hide those who don't match the search query
+              for (i = 0; i < rows.length; i++) {
+                  titleTd = rows[i].getElementsByTagName("td")[2];
+                  descriptionTd = rows[i].getElementsByTagName("td")[3];
+                  idTd = rows[i].getElementsByTagName("td")[1];
+                  emailTd = rows[i].getElementsByTagName("td")[4];
+                  statusTd = rows[i].getElementsByTagName("td")[5];
+                  if (titleTd) {
+                      titleValue = titleTd.textContent || titleTd.innerText;
+                  }
+                  if (descriptionTd) {
+                      descriptionValue = descriptionTd.textContent || descriptionTd.innerText;
+                  }
+                  if (idTd) {
+                      idValue = idTd.textContent || idTd.innerText;
+                  }
+                  if (emailTd) {
+                      emailValue = emailTd.textContent || emailTd.innerText;
+                  }
+                  if (statusTd) {
+                      statusValue = statusTd.textContent || statusTd.innerText;
+                  }
+                  if (titleValue.toUpperCase().indexOf(filter) > -1 || descriptionValue.toUpperCase().indexOf(filter) > -1 || idValue.toUpperCase().indexOf(filter) > -1 || emailValue.toUpperCase().indexOf(filter) > -1 || statusValue.toUpperCase().indexOf(filter) > -1) {
+                      rows[i].style.display = "";
+                  } else {
+                      rows[i].style.display = "none";
+                  }
+              }
+          }
+      </script><br>
+    <% end %>
+
+
+  <% else %>
+    <p style="text-align:-moz-right; color: white;">
+      Create Ticket for a User.&nbsp;&nbsp;&nbsp;&nbsp;
+      <span style="float:right;">
+        <%= link_to image_tag("add.svg", width: "40", height: "40", background: "#FFFFFF"), "/tickets/new/#{@current_user.id}", style: "top:200px" %>
+    </span>
+    </p> <br>
+
+    <p style="text-align:left; color: white;">
+      <font size="+2">Tickets waiting for being assigned to executive and the priority:</font>
+      <span style="float:right;" class=" btn-default transparent">
+        ---------------------------------------------------
+      </span>
+    </p>
+
+    <table class="table" style="width:100%">
+      <thead class="btn-default">
+      <tr>
+        <th style="width:5%"></th>
+        <th scope="col" style="width:5%">ID</th>
+        <th scope="col" style="width:70%">Title</th>
+        <th scope="col" style="width:10%">Status</th>
+        <th scope="col" style="width:10%"></th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @tickets_executive_priority.each do |ticket| %>
+        <tr>
+          <td><%= image_tag("green.svg", width: "35", height: "35", background: "#FFFFFF") %></td>
+          <td><%= ticket.id %></td>
+          <td><%= ticket.title %></td>
+          <td><%= ticket.status %></td>
+          <td><%= button_to "Details", { controller: "tickets", action: "set", ticket_id: ticket.id, user_id: @current_user.id }, method: :post, class: "btn btn-default" %> </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table> <br>
+
+    <p style="text-align:left; color: white;">
+      <font size="+2">Tickets waiting to be assigned the priority:</font>
+      <span style="float:right;" class=" btn-default transparent">
+         -------------------------------------------------------------------------------------------
+      </span>
+    </p>
+
+    <table class="table" style="width:100%">
+      <thead class="btn-default">
+      <tr>
+        <th style="width:5%"></th>
+        <th scope="col" style="width:5%">ID</th>
+        <th scope="col" style="width:70%">Title</th>
+        <th scope="col" style="width:10%">Status</th>
+        <th scope="col" style="width:10%"></th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @tickets_priority.each do |ticket| %>
+        <tr>
+          <td><%= image_tag("green.svg", width: "35", height: "35", background: "#FFFFFF") %></td>
+          <td><%= ticket.id %></td>
+          <td><%= ticket.title %></td>
+          <td><%= ticket.status %></td>
+          <td><%= button_to "Details", { controller: "tickets", action: "set", ticket_id: ticket.id, user_id: @current_user.id }, method: :post, class: "btn btn-default" %> </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table> <br>
+
+    <div class="topnav">
+    </div>
+    <p style="text-align:left; color: white;">
+      <font size="+2">Registered Users:</font>
+      <span style="float:right;" class=" btn-default transparent">
+         --------------------------------------------------------------------------------------------------------------------------------------
+      </span>
+    </p>
+
+    <label for="myInputUsers"></label>
+    <input type="text" class=" btn-default" placeholder="Search.." id="myInputUsers" onkeyup="myFunctionUsers()">
+
+    <table class="table" style="width:100%" id="myTableUsers">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col" style="width:30%">Fullname</th>
+        <th scope="col" style="width:40%">Email</th>
+        <th scope="col" style="width:10%">Role</th>
+        <th scope="col" style="width:5%">Average Calification</th>
+        <th style="width:10%"></th>
+        <% if @current_user.role == "admin" %>
+          <th style="width:10%"></th>
+        <% end %>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @users_executive.each do |u| %>
+        <% if u.role == "user" %>
+          <tr class="MyTableRow4">
+            <td><%= u.first_name + " " + u.last_name %></td>
+            <td><%= u.email %></td>
+            <td><%= u.role %></td>
+            <td></td>
+            <% if @current_user.role == "admin" %>
+              <td></td>
+            <% end %>
+            <td><%= button_to "Upgrade", { controller: "users", action: "changeStatus", role: u.role, user_id: u.id, new_role: "Upgrade" }, method: :post, class: %w[btn btn-default], :onclick => "return confirm('If this user has open tickets they will be deleted, are you sure about this action?')" %></td>
+          </tr>
+        <% end %>
+      <% end %>
+      <% j = 0 %>
+      <% @executive.each do |a| %>
+        <tr class="MyTableRow4">
+          <td><%= a.first_name + " " + a.last_name %></td>
+          <td><%= a.email %></td>
+          <td><%= a.role %></td>
+          <% if @executive_average[a.id].nil? %>
+            <td>0</td>
+          <% else %>
+            <td><%= @executive_average[a.id].round(1) %></td>
+          <% end %>
+          <td><%= button_to "Degrade", { controller: "users", action: "changeStatus", role: @executive[j].role, user_id: @executive[j].id, new_role: "Degrade" }, method: :post, class: %w[btn btn-default], :onclick => "return confirm('If this executive has tickets, they will be reassigned, are you sure about this action?')" %></td>
+          <% if @current_user.role == "admin" %>
+            <td><%= button_to "Upgrade", { controller: "users", action: "changeStatus", role: @executive[j].role, user_id: @executive[j].id, new_role: "Upgrade" }, method: :post, class: %w[btn btn-default], :onclick => "return confirm('If this executive has tickets, they will be reassigned, are you sure about this action?')" %></td>
+          <% end %>
+        </tr>
+        <% j += 1 %>
+      <% end %>
+
+      <% @users_executive.each do |u| %>
+        <% if @current_user.role == "admin" %>
+          <% if u.role == "supervisor" %>
+            <tr class="MyTableRow4">
+              <td><%= u.first_name + " " + u.last_name %></td>
+              <td><%= u.email %></td>
+              <td><%= u.role %></td>
+              <td></td>
+              <td><%= button_to "Degrade", { controller: "users", action: "changeStatus", role: u.role, user_id: u.id, new_role: "Degrade" }, method: :post, class: %w[btn btn-default], :onclick => "return confirm('You are about to degrade a supervisor, are you sure about this action?')" %></td>
+              <td></td>
+            </tr>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      </tbody>
+    </table>
+    <script>
+        function myFunctionUsers() {
+            // Declare variables
+            let input, filter, rows, i, nameTd, roleTd, emailTd, nameValue, roleValue, emailValue;
+            input = document.getElementById("myInputUsers");
+            filter = input.value.toUpperCase();
+            rows = document.getElementsByClassName("MyTableRow4");
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < rows.length; i++) {
+                nameTd = rows[i].getElementsByTagName("td")[0];
+                roleTd = rows[i].getElementsByTagName("td")[2];
+                emailTd = rows[i].getElementsByTagName("td")[1];
+                if (nameTd) {
+                    nameValue = nameTd.textContent || nameTd.innerText;
+                }
+                if (roleTd) {
+                    roleValue = roleTd.textContent || roleTd.innerText;
+                }
+                if (emailTd) {
+                    emailValue = emailTd.textContent || emailTd.innerText;
+                }
+                if (nameValue.toUpperCase().indexOf(filter) > -1 || roleValue.toUpperCase().indexOf(filter) > -1 || emailValue.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    </script><br>
+
+    <p style="text-align:left; color: white;">
+      <font size="+2">Open Tickets:</font>
+      <span style="float:right;" class=" btn-default transparent">
+        --------------------------------------------------------------------------------------------------------------------------------------------------
+      </span>
+    </p>
+
+    <p style="text-align:left; color: white;">
+      <label for="myInputOpen"></label>
+      <input type="text" id="myInputOpen" onkeyup="myFunctionOpen()" placeholder="Search by.." class="btn-default">
+      <span style="float:right;" class=" btn-default">
+        <label for="subjects"></label>
+        Order By:
+        <select id="selectBoxOpenTicket" class="btn-default" onchange="sortTable('myTableOpen','selectBoxOpenTicket', 5, 6);">
+          <option value="id">Id</option>
+          <option value="priority">Priority</option>
+          <option value="else">Closing date</option>
+        </select>
+      </span>
+    </p>
+
+    <table class="table" style="width:100%" id="myTableOpen">
+      <thead class="btn-default">
+      <tr>
+        <th style="width:5%"></th>
+        <th scope="col" style="width:5%">ID</th>
+        <th scope="col" style="width:25%">Title</th>
+        <th scope="col" style="width:50%">Description</th>
+        <th scope="col" style="width:10%">Status</th>
+        <th scope="col">Priority</th>
+        <th scope="col">Closing Date</th>
+        <th scope="col" style="width:10%"></th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @tickets_open.each do |ticket| %>
+        <tr class="MyTableRow5">
+          <% if ticket.tags == "red" %>
+            <td><%= image_tag("red.svg", width: "35", height: "35", background: "#FFFFFF") %></td>
+          <% else
+               if ticket.tags == "yellow" %>
+              <td><%= image_tag("yellow.svg", width: "35", height: "35", background: "#FFFFFF") %></td>
+            <% else %>
+              <td><%= image_tag("green.svg", width: "35", height: "35", background: "#FFFFFF") %></td>
+            <% end %>
+          <% end %>
+          <td><%= ticket.id %></td>
+          <td><%= ticket.title %></td>
+          <td><%= ticket.description %></td>
+          <td><%= ticket.status %></td>
+          <% if ticket.priority == nil %>
+            <td>Not define</td>
+          <% else %>
+            <td><%= ticket.priority %></td>
+          <% end %>
+          <td><%= ticket.ticket_deadline %></td>
+          <td><%= button_to "Details", { controller: "tickets", action: "set", ticket_id: ticket.id, user_id: @current_user.id }, method: :post, class: "btn btn-default" %> </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <script>
+        function myFunctionOpen() {
+            // Declare variables
+            let input, filter, rows, i, titleTd, descriptionTd, idTd, statusTd, titleValue, descriptionValue, idValue,
+                statusValue;
+            input = document.getElementById("myInputOpen");
+            filter = input.value.toUpperCase();
+            rows = document.getElementsByClassName("MyTableRow5");
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < rows.length; i++) {
+                titleTd = rows[i].getElementsByTagName("td")[2];
+                descriptionTd = rows[i].getElementsByTagName("td")[3];
+                idTd = rows[i].getElementsByTagName("td")[1];
+                statusTd = rows[i].getElementsByTagName("td")[4];
+                if (titleTd) {
+                    titleValue = titleTd.textContent || titleTd.innerText;
+                }
+                if (descriptionTd) {
+                    descriptionValue = descriptionTd.textContent || descriptionTd.innerText;
+                }
+                if (idTd) {
+                    idValue = idTd.textContent || idTd.innerText;
+                }
+                if (statusTd) {
+                    statusValue = statusTd.textContent || statusTd.innerText;
+                }
+                if (titleValue.toUpperCase().indexOf(filter) > -1 || descriptionValue.toUpperCase().indexOf(filter) > -1 || idValue.toUpperCase().indexOf(filter) > -1 || statusValue.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    </script><br>
+
+    <p style="text-align:left; color: white;">
+      <font size="+2">Overdue tickets report:</font>
+      <span style="float:right;" class=" btn-default transparent">
+         ------------------------------------------------------------------------------------------------------------------------------
+      </span>
+    </p>
+
+
+    <div style="color: white">
+        <span style="float:right;" class=" btn-default">
+          Order by:
+          <select id="selectBoxOverdue" class="btn-default" onchange="sortTable('overdue','selectBoxOverdue', 3, 4);">
+            <option value="id">Id</option>
+            <option value="priority">Priority</option>
+            <option value="else">Ticket Deadline</option>
+          </select>
+        </span>
+    </div><br><br>
+
+    <table class="table" style="width:100%" id="overdue">
+      <thead class="btn-default">
+      <tr>
+        <th style="width:5%"></th>
+        <th scope="col" style="width:5%">ID</th>
+        <th scope="col" style="width:30%">Title</th>
+        <th scope="col" style="width:15%">Priority</th>
+        <th scope="col" style="width:20%">Ticket Deadline</th>
+        <th scope="col" style="width:15%">Processed By:</th>
+        <th style="width:10%"></th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @overdue_tickets.each do |t| %>
+        <tr>
+          <td><%= image_tag("red.svg", width: "35", height: "35", background: "#FFFFFF") %></td>
+          <td><%= t.id %></td>
+          <td><%= t.title %></td>
+          <td><%= t.priority %></td>
+          <td><%= t.ticket_deadline %></td>
+          <td><%= User.joins(executive_assigneds: :ticket).where(tickets: { tags: "red" }).where(tickets: { id: t.id }).select(:first_name)[0].first_name %>
+            <%= User.joins(executive_assigneds: :ticket).where(tickets: { tags: "red" }).where(tickets: { id: t.id }).select(:last_name)[0].last_name %></td>
+          <td><%= button_to "Change Executive", { controller: "tickets", action: "set", ticket_id: t.id, user_id: @current_user.id, backer: "direct" }, method: :post, class: "btn btn-default" %> </td>
+          <td style="display: none"> <%= t.incident_creation_date %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table> <br>
+  <% end %>
+<% end %>
+
+<script>
+    function sortTable(tableName, selectName, priorityN, cdN) {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        var selectBox = document.getElementById(selectName);
+        var option = selectBox.options[selectBox.selectedIndex].value;
+        var priorityDict = {
+            "not define": 0, "low": 1, "normal": 2, "high": 3, "urgent": 4
+        }
+        if (option === "priority") {
+            var dir = "desc";
+            var n = priorityN;
+        } else if (option === "id") {
+            var dir = "asc";
+            var n = 1;
+        } else {
+            var dir = "desc";
+            var n = cdN;
+        }
+        table = document.getElementById(tableName);
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("td")[n];
+                y = rows[i + 1].getElementsByTagName("td")[n];
+                if (option === "priority") {
+                    if (dir === "asc") {
+                        if (priorityDict[x.innerHTML.toLowerCase()] > priorityDict[y.innerHTML.toLowerCase()]) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (priorityDict[x.innerHTML.toLowerCase()] < priorityDict[y.innerHTML.toLowerCase()]) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                } else {
+                    if (option === "id") {
+                        if (dir === "asc") {
+                            if (parseInt(x.innerHTML.toLowerCase(), 10) > parseInt(y.innerHTML.toLowerCase(), 10)) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else if (dir === "desc") {
+                            if (parseInt(x.innerHTML.toLowerCase(), 10) < parseInt(y.innerHTML.toLowerCase(), 10)) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    } else {
+                        if (dir === "asc") {
+                            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else if (dir === "desc") {
+                            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+</script>
+<script>
+    function clicked(e) {
+        if (!confirm('Are you sure?')) {
+            e.preventDefault();
+        }
+    }
+</script>
+
+
+

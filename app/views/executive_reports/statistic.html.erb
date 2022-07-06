@@ -1,0 +1,73 @@
+<h2 style="color: white"> Statistic </h2>
+<% if @status == true and @start != "" and @end != "" %>
+  <% if notice != "Report generated successfully" %>
+    <br>
+    <div id='hideMe'>
+      <div id="notice" class="btn-confirm" style="text-align: center"><%= notice %></div>
+    </div>
+    <br>
+    <div id="chart_div" style="width: 100%"></div>
+    <br>
+  <% end %>
+<% end %>
+<%= form_with url: "statistic", method: "get" do |form| %>
+  <div class="mb-3">
+    <%= form.label :start_date, class: "form-label", style: "color: white;" %>
+    <%= form.datetime_local_field :start_date, class: "form-control", require: true %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :end_date, class: "form-label", style: "color: white;" %>
+    <%= form.datetime_local_field :end_date, class: "form-control", require: true %>
+  </div>
+  <div class="mt-2">
+    <%= form.submit "Generate Statistic", class: ["btn", "btn-confirm"] %>
+  </div>
+  <%= link_to "Back", users_path, class: ["btn", "btn-cancel"] %>
+<% end %>
+<!Doctype HTML>
+<html>
+<head>
+  <!--Load the AJAX API-->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages': ['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+          // Create the data table.
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Description');
+          data.addColumn('number', 'Tickets');
+          data.addRows([
+              ['Tickets created', <%= @count_created%>],
+              ['Open tickets', <%= @open%>],
+              ['Closed tickets', <%= @closed%>]
+          ]);
+
+          // Set chart options
+          var options = {
+              'title': 'Statistic generated between: "<%=@start%>" - "<%=@end%>"', 'height': 500
+          };
+
+          // Instantiate and draw our chart, passing in some options.
+          var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+          chart.draw(data, options);
+      }
+  </script>
+</head>
+</html>
+
+
+
+
+
+
+

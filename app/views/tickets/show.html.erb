@@ -1,0 +1,500 @@
+<% if notice != "Your statistic was generated successfully" and notice != "Report generated successfully" %>
+  <div id='hideMe'>
+    <div id="notice" class="btn-confirm" style="text-align: center"><%= notice %></div>
+  </div>
+  <br>
+<% end %>
+<% if @users_roles != "executive" %>
+  <%= button_to "Delete Ticket", "/tickets/delete/#{@ticket.id}", method: :delete, class: ["btn", "btn-cancel"] %>
+<% end %>
+<% if @users_roles == ("supervisor") or @users_roles == ("admin") or @users_roles == ("user") %>
+  <%= link_to "Edit Ticket", edit_ticket_path, class: ["btn", "btn-default"] %>
+<% end %>
+<% if @users_roles == "user" and @ticket.status == "Closed" %>
+  <table class="table">
+    <thead class="btn-default">
+    <tr>
+      <th scope="col">Details</th>
+    </tr>
+    </thead>
+    <tbody class="btn-default">
+    <% @user_ticket.each do |user| %>
+      <tr>
+        <td>Title: <%= @ticket.title %></td>
+      </tr>
+      <tr>
+        <td>Full Name: <%= user.first_name %> <%= user.last_name %></td>
+      </tr>
+      <tr>
+        <td>Email: <%= user.email %></td>
+      </tr>
+      <tr>
+        <td>Phone: <%= user.telephone %></td>
+      </tr>
+      <tr>
+        <td>Date of Ticket: <%= @ticket.incident_creation_date %></td>
+      </tr>
+      <tr>
+        <td>Date of incident: <%= @ticket.date_incident %></td>
+      </tr>
+      <tr>
+        <td>Priority: <%= @ticket.priority %></td>
+      </tr>
+      <tr>
+        <td>Status: <%= @ticket.status %></td>
+      </tr>
+      <tr>
+        <td>Ticket Deadline: <%= @ticket.ticket_deadline %></td>
+      </tr>
+      <tr>
+        <td>Processed
+          by: <%= User.joins(executive_assigneds: :ticket).where(tickets: { id: @ticket.id }).select(:first_name)[0].first_name %>
+          <%= User.joins(executive_assigneds: :ticket).where(tickets: { id: @ticket.id }).select(:last_name)[0].last_name %></td>
+      </tr>
+      <tr>
+        <td>Id of ticket: <%= @ticket.id %></td>
+      </tr>
+      <tr>
+        <td>Description: <%= @ticket.description %></td>
+      </tr>
+      <% if @ticket.flyer.attached? %>
+        <tr>
+          <td>Image: <img src="<%= url_for(@ticket.flyer) %>" alt="flyer" width="200" height="200"></td>
+        </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table><br>
+  <h4 style="color: white;">Responses:</h4>
+
+
+  <table class="table">
+    <thead class="btn-default">
+    <tr>
+      <th scope="col">Details</th>
+      <th scope="col">Executive</th>
+    </tr>
+    </thead>
+    <tbody class="btn-default">
+    <% @responses.each_with_index do |response, i| %>
+      <tr>
+        <td>Response Nº <%= i %>: <%= response.response %></td>
+        <td>Name of executive: <%= response.user.first_name %> <%= response.user.last_name %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <div class="my-button">
+    <%= button_to "Re-open", { controller: "users", action: "statusUpdater", user_id: @user_id, ticket_id: @ticket.id, order: "reOpen" }, method: :post, class: ["btn", "btn-default"] %>
+  </div>
+  <div class="my-button">
+    <%= link_to "Back", users_path, class: ["btn", "btn-cancel"] %>
+  </div>
+<% else
+     if @users_roles == "user" and @ticket.status == "Asked" %>
+    <table class="table">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col">Details</th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @user_ticket.each do |user| %>
+        <tr>
+          <td>Title: <%= @ticket.title %></td>
+        </tr>
+        <tr>
+          <td>Full Name: <%= user.first_name %> <%= user.last_name %></td>
+        </tr>
+        <tr>
+          <td>Email: <%= user.email %></td>
+        </tr>
+        <tr>
+          <td>Phone: <%= user.telephone %></td>
+        </tr>
+        <tr>
+          <td>Date of Ticket: <%= @ticket.incident_creation_date %></td>
+        </tr>
+        <tr>
+          <td>Date of incident: <%= @ticket.date_incident %></td>
+        </tr>
+        <tr>
+          <td>Priority: <%= @ticket.priority %></td>
+        </tr>
+        <tr>
+          <td>Status: <%= @ticket.status %></td>
+        </tr>
+        <tr>
+          <td>Ticket Deadline: <%= @ticket.ticket_deadline %></td>
+        </tr>
+        <tr>
+          <td>Processed
+            by: <%= User.joins(executive_assigneds: :ticket).where(tickets: { id: @ticket.id }).select(:first_name)[0].first_name %>
+            <%= User.joins(executive_assigneds: :ticket).where(tickets: { id: @ticket.id }).select(:last_name)[0].last_name %></td>
+        </tr>
+        <tr>
+          <td>Id of ticket: <%= @ticket.id %></td>
+        </tr>
+        <tr>
+          <td>Description: <%= @ticket.description %></td>
+        </tr>
+        <% if @ticket.flyer.attached? %>
+          <tr>
+            <td>Image: <img src="<%= url_for(@ticket.flyer) %>" alt="flyer" width="200" height="200"></td>
+          </tr>
+        <% end %>
+      <% end %>
+      </tbody>
+    </table> <br>
+    <h4 style="color: white;">Responses:</h4>
+
+    <table class="table">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col">Details</th>
+        <th scope="col">Executive</th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <tr>
+        <td>New Response: <%= @last_response.response %></td>
+        <td>Name of executive: <%= @last_response.user.first_name %> <%= @last_response.user.last_name %></td>
+      </tr>
+      </tbody>
+    </table>
+    <h4 style="color: white;">Do you accept the executives response?:</h4>
+    <div class="my-button">
+      <%= link_to "Accept response", new_executive_report_path(ticket_id: @ticket.id, user_id: User.joins(executive_assigneds: :ticket).where(tickets: { id: @ticket.id }).first.id, user1_id: @current_user.id), class: ["btn", "btn-confirm"] %>
+    </div>
+    <div class="my-button">
+      <%= button_to "Denie response", { controller: "users", action: "statusUpdater", user_id: @user_id, ticket_id: @ticket.id, order: "denied" }, method: :post, class: ["btn", "btn-default"] %>
+    </div>
+    <div class="my-button">
+      <%= link_to "Back", users_path(@ticket.update(status: "Asked"), flash[:notice] = ""), class: ["btn", "btn-cancel"] %>
+    </div>
+    <br>
+  <% else
+       if @users_roles == "user" and @ticket.status == "Pending" %>
+      <table class="table">
+        <thead class="btn-default">
+        <tr>
+          <th scope="col">Details</th>
+        </tr>
+        </thead>
+        <tbody class="btn-default">
+        <% @user_ticket.each do |user| %>
+          <tr>
+            <td>Title: <%= @ticket.title %></td>
+          </tr>
+          <tr>
+            <td>Full Name: <%= user.first_name %> <%= user.last_name %></td>
+          </tr>
+          <tr>
+            <td>Email: <%= user.email %></td>
+          </tr>
+          <tr>
+            <td>Phone: <%= user.telephone %></td>
+          </tr>
+          <tr>
+            <td>Date of Ticket: <%= @ticket.incident_creation_date %></td>
+          </tr>
+          <tr>
+            <td>Date of incident: <%= @ticket.date_incident %></td>
+          </tr>
+          <tr>
+            <td>Priority: <%= @ticket.priority %></td>
+          </tr>
+          <tr>
+            <td>Status: <%= @ticket.status %></td>
+          </tr>
+          <tr>
+            <td>Ticket Deadline: <%= @ticket.ticket_deadline %></td>
+          </tr>
+          <tr>
+            <td>Processed
+              by: <%= User.joins(executive_assigneds: :ticket).where(tickets: { id: @ticket.id }).select(:first_name)[0].first_name %>
+              <%= User.joins(executive_assigneds: :ticket).where(tickets: { id: @ticket.id }).select(:last_name)[0].last_name %></td>
+          </tr>
+          <tr>
+            <td>Id of ticket: <%= @ticket.id %></td>
+          </tr>
+          <tr>
+            <td>Description: <%= @ticket.description %></td>
+          </tr>
+          <% if @ticket.flyer.attached? %>
+            <tr>
+              <td>Image: <img src="<%= url_for(@ticket.flyer) %>" alt="flyer" width="200" height="200"></td>
+            </tr>
+          <% end %>
+        <% end %>
+        </tbody>
+      </table>
+      <div class="my-button">
+        <%= link_to "Back", users_path, method: :post, class: ["btn", "btn-cancel"] %>
+      </div>
+      <br>
+    <% else
+         if @users_roles == "user" and @ticket.status == "Sended" %>
+        <table class="table">
+          <thead class="btn-default">
+          <tr>
+            <th scope="col">Details</th>
+          </tr>
+          </thead>
+          <tbody class="btn-default">
+          <% @user_ticket.each do |user| %>
+            <tr>
+              <td>Title: <%= @ticket.title %></td>
+            </tr>
+            <tr>
+              <td>Full Name: <%= user.first_name %> <%= user.last_name %></td>
+            </tr>
+            <tr>
+              <td>Email: <%= user.email %></td>
+            </tr>
+            <tr>
+              <td>Phone: <%= user.telephone %></td>
+            </tr>
+            <tr>
+              <td>Date of Ticket: <%= @ticket.incident_creation_date %></td>
+            </tr>
+            <tr>
+              <td>Date of incident: <%= @ticket.date_incident %></td>
+            </tr>
+            <tr>
+              <td>Priority: <%= @ticket.priority %></td>
+            </tr>
+            <tr>
+              <td>Status: <%= @ticket.status %></td>
+            </tr>
+            <tr>
+              <td>Ticket Deadline: <%= @ticket.ticket_deadline %></td>
+            </tr>
+            <tr>
+              <td>Processed by: Waiting for executive to be assigned</td>
+            </tr>
+            <tr>
+              <td>Id of ticket: <%= @ticket.id %></td>
+            </tr>
+            <tr>
+              <td>Description: <%= @ticket.description %></td>
+            </tr>
+            <% if @ticket.flyer.attached? %>
+              <tr>
+                <td>Image: <img src="<%= url_for(@ticket.flyer) %>" alt="flyer" width="200" height="200"></td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+        <div class="my-button">
+          <%= link_to "Back", users_path, method: :post, class: ["btn", "btn-cancel"] %>
+        </div>
+      <% end %>
+    <% end %> <br>
+  <% end %>
+<% end %>
+
+<% if @users_roles != "user" %>
+  <% if @ticket.status == "Sended" %>
+    <table class="table">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col">Details</th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @user_ticket.each do |user| %>
+        <tr>
+          <td>Title: <%= @ticket.title %></td>
+        </tr>
+        <tr>
+          <td>Full Name: <%= user.first_name %> <%= user.last_name %></td>
+        </tr>
+        <tr>
+          <td>Email: <%= user.email %></td>
+        </tr>
+        <tr>
+          <td>Phone: <%= user.telephone %></td>
+        </tr>
+        <tr>
+          <td>Date of Ticket: <%= @ticket.incident_creation_date %></td>
+        </tr>
+        <tr>
+          <td>Date of incident: <%= @ticket.date_incident %></td>
+        </tr>
+        <tr>
+          <td>Priority: <%= @ticket.priority %></td>
+        </tr>
+        <tr>
+          <td>Status: <%= @ticket.status %></td>
+        </tr>
+        <tr>
+          <td>Ticket Deadline: <%= @ticket.ticket_deadline %></td>
+        </tr>
+        <tr>
+          <td>Processed by: Waiting for executive to be assigned</td>
+        </tr>
+        <tr>
+          <td>Id of ticket: <%= @ticket.id %></td>
+        </tr>
+        <tr>
+          <td>Description: <%= @ticket.description %></td>
+        </tr>
+        <% if @ticket.flyer.attached? %>
+          <tr>
+            <td>Image: <img src="<%= url_for(@ticket.flyer) %>" alt="flyer" width="200" height="200"></td>
+          </tr>
+        <% end %>
+      <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <table class="table">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col">Details</th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @user_ticket.each do |user| %>
+        <tr>
+          <td>Title: <%= @ticket.title %></td>
+        </tr>
+        <tr>
+          <td>Full Name: <%= user.first_name %> <%= user.last_name %></td>
+        </tr>
+        <tr>
+          <td>Email: <%= user.email %></td>
+        </tr>
+        <tr>
+          <td>Phone: <%= user.telephone %></td>
+        </tr>
+        <tr>
+          <td>Date of Ticket: <%= @ticket.incident_creation_date %></td>
+        </tr>
+        <tr>
+          <td>Date of incident: <%= @ticket.date_incident %></td>
+        </tr>
+        <tr>
+          <td>Priority: <%= @ticket.priority %></td>
+        </tr>
+        <tr>
+          <td>Status: <%= @ticket.status %></td>
+        </tr>
+        <tr>
+          <td>Ticket Deadline: <%= @ticket.ticket_deadline %></td>
+        </tr>
+        <tr>
+          <td>Processed
+            by: <%= User.joins(executive_assigneds: :ticket).where(tickets: { id: @ticket.id }).select(:first_name)[0].first_name %>
+            <%= User.joins(executive_assigneds: :ticket).where(tickets: { id: @ticket.id }).select(:last_name)[0].last_name %></td>
+        </tr>
+        <tr>
+          <td>Id of ticket: <%= @ticket.id %></td>
+        </tr>
+        <tr>
+          <td>Description: <%= @ticket.description %></td>
+        </tr>
+        <% if @ticket.flyer.attached? %>
+          <tr>
+            <td>Image: <img src="<%= url_for(@ticket.flyer) %>" alt="flyer" width="200" height="200"></td>
+          </tr>
+        <% end %>
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
+  <% if @comments.count >= 1 %>
+    <h4 style="color: white;">Comments:</h4>
+
+    <table class="table">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col">Details</th>
+        <th scope="col">Executive</th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @comments.each_with_index do |comment, i| %>
+        <% if comment.comment? %>
+          <tr>
+            <td>Comment Nº <%= i %>: <%= comment.comment %></td>
+            <td><%= comment.user.first_name %> <%= comment.user.last_name %></td>
+          </tr>
+        <% end %>
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+  <% if @ticket.status != "Asked" %>
+    <br>
+    <div class="my-button">
+      <%= link_to "Create Comment", new_comment_path(user_id: @current_user.id, ticket_id: @ticket.id), class: ["btn", "btn-default"] %>
+    </div>
+  <% end %>
+
+  <% if @responses.count >= 1 %>
+    <br>
+    <h4 style="color: white;">Responses:</h4>
+    <table class="table">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col">Details</th>
+        <th scope="col">Executive</th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <% @responses.each_with_index do |response, i| %>
+        <tr>
+          <td>Response Nº <%= i %>: <%= response.response %></td>
+          <td>Name of executive: <%= response.user.first_name %> <%= response.user.last_name %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+  <% if @ticket.status != "Asked" %>
+    <br>
+    <div class="my-button">
+      <%= link_to "Response this ticket", new_response_path(user_id: @current_user.id, ticket_id: @ticket.id), class: ["btn", "btn-default"] %>
+    </div>
+  <% end %>
+
+
+  <% if @users_roles != "executive" %>
+    <br>
+    <%= link_to "Back", users_path, method: :post, class: ["btn", "btn-cancel"] %>
+  <% else %>
+    <% if @ticket.status == "Asked" %>
+      <div>
+        <center>
+          <div class="my-button">
+            <%= link_to "Back", users_path, method: :post, class: ["btn", "btn-cancel"] %>
+          </div>
+        </center>
+      </div>
+    <% else %>
+      <% if @ticket.status == "Closed" %>
+        <div>
+          <center>
+            <div class="my-2-buttons">
+              <%= link_to "Open", { controller: "users", action: "set", user_id: @user_id }, method: :post, class: ["btn", "btn-default"] %>
+              <%= link_to "Back", users_path, method: :post, class: ["btn", "btn-cancel"] %>
+            </div>
+          </center>
+        </div>
+      <% else %>
+        <div>
+          <center>
+            <div class="my-button">
+              <%= link_to "Back", users_path, method: :post, class: ["btn", "btn-cancel"] %>
+            </div>
+          </center>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

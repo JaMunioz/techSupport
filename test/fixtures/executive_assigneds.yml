@@ -1,0 +1,7 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date_ticket_assigned: 2022-04-27 12:24:46
+
+two:
+  date_ticket_assigned: 2022-04-27 12:24:46

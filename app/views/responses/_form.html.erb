@@ -1,0 +1,15 @@
+<div class="row ml-0">
+  <div class="col-6">
+    <%= form_with model: response, local: true do |form| %>
+
+      <div class="mb-3">
+        <%= form.label :text_of_the_answer_to_the_user, class: "form-label" %>
+        <%= form.text_area :response, class: "form-control" %>
+      </div>
+      <div class="mt-2">
+        <%= form.submit submit_btn_text, class: ["btn", "btn-primary"] %>
+        <%= link_to "Back", :back, class: ["btn", "btn-secondary"] %>
+      </div>
+    <% end %>
+  </div>
+</div>

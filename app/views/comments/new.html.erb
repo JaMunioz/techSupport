@@ -1,0 +1,26 @@
+<p style="text-align:left; color: white;">
+  <font size="+2">New Comment:</font>
+  <span style="float:right;" class=" btn-default transparent">
+       -----------------------------------------------------------------------------------------------------------------------------------------
+    </span>
+</p>
+
+<%= form_with model: @comment do |form| %>
+  <div class="mb-3">
+    <%= form.label :text_of_the_new_comment, class: "form-label", style: "color: white;"  %>
+    <%= form.text_area :comment, class: "form-control" %>
+  </div>
+  <div class="mb-3">
+    <%= form.number_field :user_id, style: "display: none", value: @user_id %>
+  </div>
+  <div class="mb-3">
+    <%= form.number_field :ticket_id, style: "display: none", value: @ticket_id %>
+  </div>
+  <hr>
+
+  <div class="mb-3">
+    <%= form.submit "Create Comment", class: ["btn", "btn-confirm"] %>
+    <%= link_to "Back", :back, class: ["btn", "btn-cancel"] %>
+  </div>
+
+<% end %>

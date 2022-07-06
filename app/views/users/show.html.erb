@@ -1,0 +1,33 @@
+<% if notice != "Your statistic was generated successfully" and notice != "Report generated successfully" %>
+  <div id='hideMe'>
+    <div id="notice" class="btn-confirm" style="text-align: center"><%= notice %></div>
+  </div>
+  <br>
+<%end %>
+
+<%= render @user %>
+<%= fields_for @user do |form| %>
+  <div class="mb-3">
+      <%= form.label :name, class: "form-label", style: "color: white;"   %>
+      <%= form.text_field :first_name, class: "form-control",:disabled => true %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :last_name, class: "form-label", style: "color: white;"   %>
+    <%= form.text_field :last_name, class: "form-control",:disabled => true %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :email, class: "form-label", style: "color: white;"   %>
+    <%= form.text_field :email, class: "form-control",:disabled => true %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :telephone, class: "form-label", style: "color: white;"   %>
+    <%= form.text_field :telephone, class: "form-control",:disabled => true %>
+  </div>
+<%end %>
+<div>
+  <%= link_to "Edit Information", edit_user_registration_path, class: ["btn", "btn-default"] %>
+  <%= link_to "Back", users_path, class: ["btn", "btn-cancel"] %>
+</div>
+
+
+

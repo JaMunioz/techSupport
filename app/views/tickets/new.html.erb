@@ -1,0 +1,73 @@
+<% if notice != "Your statistic was generated successfully" and notice != "Report generated successfully" %>
+  <div id='hideMe'>
+    <p id="notice" class="btn-cancel" style="text-align: center"><%= notice %></p>
+  </div>
+<% end %>
+<p style="text-align:left; color: white;">
+  <font size="+2">New Ticket:</font>
+  <span style="float:right;" class=" btn-default transparent">
+       -----------------------------------------------------------------------------------------------------------------------------------------
+    </span>
+</p>
+<% if @current_user.role == "user" %>
+  <p style="color: white;">Please enter the required information to create a new Ticket:</p>
+  <%= form_with model: @ticket do |form| %>
+    <div class="mb-3">
+      <%= form.label :date_incident, class: "form-label", style: "color: white;" %>
+      <%= form.datetime_local_field :date_incident, class: "form-control" %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :title, class: "form-label", style: "color: white;" %>
+      <%= form.text_field :title, class: "form-control" %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :description, class: "form-label", style: "color: white;" %>
+      <%= form.text_area :description, class: "form-control" %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :flyer, class: "form-label", style: "color: white;" %>
+      <%= form.file_field :flyer, style: "color: white;" %>
+    </div>
+    <div class="mb-3">
+      <%= form.number_field :userid, style: "display: none", value: @user_id %>
+    </div>
+    <hr>
+    <div class="mb-3">
+      <%= form.submit "Create Ticket", class: ["btn", "btn-confirm"] %>
+      <%= link_to "Back", users_path, class: ["btn", "btn-cancel"] %>
+    </div>
+  <% end %>
+<% else %>
+  <p style="color: white;">Please enter the required information to create a new Ticket:</p>
+  <%= form_with model: @ticket do |form| %>
+    <div class="mb-3">
+      <%= form.label :date_incident, class: "form-label", style: "color: white;" %>
+      <%= form.datetime_local_field :date_incident, class: "form-control" %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :title, class: "form-label", style: "color: white;" %>
+      <%= form.text_field :title, class: "form-control" %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :description, class: "form-label", style: "color: white;" %>
+      <%= form.text_area :description, class: "form-control" %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :ticket_for_user, class: "form-label", style: "color: white;" %>
+      <%= form.collection_select(:user_id, User.where(role: "user").order(email: :asc), :id, :email, {}, { class: "form-control" }) %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :flyer, class: "form-label", style: "color: white;" %>
+      <%= form.file_field :flyer, style: "color: white;" %>
+    </div>
+    <div class="mb-3">
+      <%= form.number_field :userid, style: "display: none", value: @user_id %>
+    </div>
+    <hr>
+    <div class="mb-3">
+      <%= form.submit "Create Ticket", class: ["btn", "btn-confirm"] %>
+      <%= link_to "Back", :back, class: ["btn", "btn-cancel"] %>
+    </div>
+  <% end %>
+<% end %>
+

@@ -1,0 +1,28 @@
+<div class="row ml-0">
+  <p id="notice"><%= notice %></p>
+  <pre>
+
+
+</pre>
+</div>
+<div class="row ml-0">
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Details</th>
+      <th scope="col">Executive</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @comment_ticket.each_with_index do |comment,i| %>
+      <tr>
+        <td>Comment Nº <%=i%>: <%= comment.comment  %></td>
+        <td>Name of executive: <%= comment.user.first_name  %> <%= comment.user.last_name  %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%= link_to "New comment", new_comment_path %>
+<%= link_to "Back", "/tickets/"+@ticket_id.to_s %>

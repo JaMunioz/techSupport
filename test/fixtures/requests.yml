@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  request: MyString
+  date_request: 2022-04-27 12:24:43
+
+two:
+  request: MyString
+  date_request: 2022-04-27 12:24:43

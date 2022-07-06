@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Issuetracker</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+</head>
+
+<body>
+<header>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-main-border">
+    <div class="container-fluid">
+      <h1><%= link_to "Home", root_path, class: "navbar-brand", style: "margin-left:.5em" %></h1>
+    </div>
+  </nav>
+  <div id="container">
+    <main id="main_content">
+      <%= yield %>
+    </main>
+  </div>
+</header>
+
+
+</body>
+<br>
+<br>
+<footer class="container-fluid text-muted">
+  <div class="row mt-4">
+    <p style="color: white;">
+      Contact us at: help@technicsupport.com
+      <br>
+      Here are our <a href="https://www.termsofusegenerator.net/live.php?token=Ye1yoe1B9iLRVhZVReJ2hphgxOVrLp6F" target="_blank">Terms of use</a>
+      <br>
+      Here are our <a href="https://www.termsofservicegenerator.net/live.php?token=vCtSxOczqbiOceCuXgG9DqCoRNM4Zpfz" target="_blank">Terms of service</a>
+    </p>
+  </div>
+</footer>
+</html>

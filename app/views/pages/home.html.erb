@@ -1,0 +1,29 @@
+<p style="text-align:left; color: white;">
+  <%= image_tag("engranaje.png", width: "100",height: "100", background: "#FFFFFF") %>
+  <span style="float:center;">
+    <font size="+10">Technic Support</font>
+  </span>
+</p>
+
+<table class="table">
+  <thead class="btn-default">
+  <tr>
+    <th scope="col", style="width:4%">Id</th>
+    <th scope="col", style="width:86%">First Name</th>
+    <th scope="col", style="width:10%">Last Name</th>
+    <th scope="col", style="width:10%">Role</th>
+    <th> </th>
+  </tr>
+  </thead>
+  <tbody class="btn-default">
+  <% @users_table.each do |user| %>
+    <tr>
+      <td><%= user.id %></td>
+      <td><%= user.first_name %></td>
+      <td><%= user.last_name %></td>
+      <td><%= user.role %></td>
+      <td>&nbsp;<%= button_to "-", { controller: "users", action: "set", user_id: user.id }, method: :post, class: ["btn", "btn-default"] %> </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

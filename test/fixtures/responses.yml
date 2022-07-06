@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  response: MyString
+  date_response: 2022-04-27 12:24:44
+  state: false
+
+two:
+  response: MyString
+  date_response: 2022-04-27 12:24:44
+  state: false

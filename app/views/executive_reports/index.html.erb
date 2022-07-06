@@ -1,0 +1,75 @@
+<% if notice != "Your statistic was generated successfully"%>
+  <div id='hideMe'>
+    <div id="notice" class="btn-confirm" style="text-align: center"><%= notice %></div>
+  </div>
+  <br>
+<% end %>
+<p style="text-align:left; color: white;">
+  <font size="+3">Executive reports</font>
+</p>
+<%= form_tag("executive_reports", :method => "get") do %>
+  <label style="color:white;">Start date: </label> <%= datetime_local_field :start_date, class: "form-control" %>
+  <label style="color:white;">End date: </label> <%= datetime_local_field :end_date, class: "form-control" %>
+  <br>
+  <br>
+  <label style="color:white;">Executive:</label>
+  <%= collection_select(:user_id, :email, User.where(role: "executive").order(first_name: :asc), :id, :email, {}, { class: "form-control" }) %>
+  <%= check_box :options, class: "form-control" %><label style="color:white;">All executives</label>
+  <br>
+  <br>
+  <%= submit_tag("Find") %>
+<% end %>
+<br>
+<% if @closed %>
+  <% if @all == 0 %>
+    <div style="color: white;">Report for <%= @user.first_name %> <%= @user.last_name %></div>
+    <table class="table" style="width:100%">
+      <thead class="btn-default">
+      <tr>
+        <th scope="col" style="width:5%">Nº Ticket Closed</th>
+        <th scope="col" style="width:25%">Nº Ticket Open</th>
+        <th scope="col" style="width:50%">Calification</th>
+      </tr>
+      </thead>
+      <tbody class="btn-default">
+      <tr>
+        <td><%= @closed %></td>
+        <td><%= @open %></td>
+        <td><%= @average_evaluation %></td>
+      </tr>
+      </tbody>
+    </table>
+  <% else %>
+    <% @ids.each do |id| %>
+      <div style="color: white;">Report
+        for <%= User.find_by(id: id).first_name %> <%= User.find_by(id: id).last_name %></div>
+      <table class="table" style="width:100%">
+        <thead class="btn-default">
+        <tr>
+          <th scope="col" style="width:5%">Nº Ticket Closed</th>
+          <th scope="col" style="width:25%">Nº Ticket Open</th>
+          <th scope="col" style="width:50%">Calification</th>
+        </tr>
+        </thead>
+        <tbody class="btn-default">
+        <tr>
+          <td><%= Ticket.joins(executive_assigneds: :user).where(status: "Closed").where('date_ticket_assigned <= ?', params[:end_date][:"{:class=>\"form-control\"}"])
+                        .where('date_ticket_assigned >= ?', params[:start_date][:"{:class=>\"form-control\"}"]).
+                  where(users: { id: id }).count() %></td>
+          <td><%= Ticket.joins(executive_assigneds: :user).where(status: ["Pending", "Asked"]).where('date_ticket_assigned <= ?', params[:end_date][:"{:class=>\"form-control\"}"])
+                        .where('date_ticket_assigned >= ?', params[:start_date][:"{:class=>\"form-control\"}"])
+                        .where(users: { id: id }).count() %></td>
+          <% if ExecutiveReport.where(user_id: id).average(:calification).nil? %>
+            <td>0</td>
+          <% else %>
+            <td><%= ExecutiveReport.where(user_id: id).average(:calification) %></td>
+          <% end %>
+        </tr>
+        </tbody>
+      </table>
+    <% end %>
+  <% end %>
+<% end %>
+<div class="my-button">
+  <%= link_to "Back", users_path, method: :post, class: ["btn", "btn-cancel"] %>
+</div>

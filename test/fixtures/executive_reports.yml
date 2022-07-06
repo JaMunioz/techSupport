@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  calification: 1.5
+  date: 2022-04-27 12:24:47
+
+two:
+  calification: 1.5
+  date: 2022-04-27 12:24:47

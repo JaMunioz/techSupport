@@ -1,0 +1,24 @@
+<p style="text-align:left; color: white;">
+  <font size="+2">New Response:</font>
+  <span style="float:right;" class=" btn-default transparent">
+       -----------------------------------------------------------------------------------------------------------------------------------------
+    </span>
+</p>
+
+<%= form_with model: @response do |form| %>
+  <div class="mb-3">
+    <%= form.label :text_of_the_answer_to_the_user, class: "form-label", style: "color: white;"  %>
+    <%= form.text_area :response, class: "form-control" %>
+  </div>
+  <div class="mb-3">
+    <%= form.number_field :user_id, style: "display: none", value: @user_id %>
+  </div>
+  <div class="mb-3">
+    <%= form.number_field :ticket_id, style: "display: none", value: @ticket_id %>
+  </div>
+  <hr>
+  <div class="mb-3">
+    <%= form.submit "Send to the user", class: ["btn", "btn-confirm"] %>
+    <%= link_to "Back", :back, class: ["btn", "btn-cancel"] %>
+  </div>
+<% end %>
